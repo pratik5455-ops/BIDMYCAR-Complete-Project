@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bid My Car — Vehicle Auctions</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#061827;--card:#0b2235;--card2:#0f2c45;--line:#1c3card;--ln:#1d3a56;--tx:#e8f1fa;--mu:#8fa6bd;--ac:#087cff;--ac2:#39a7ff;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 -apple-system,Segoe UI,Roboto,Inter,sans-serif}
+a{color:var(--ac2);text-decoration:none}h1,h2,h3{margin:0 0 .5rem}
+nav{position:sticky;top:0;z-index:5;background:#061827;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:6px;padding:12px 24px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:20px;color:#fff;margin-right:auto}.logo b{color:var(--ac2)}
+nav a.l{color:var(--mu);padding:6px 12px;border-radius:8px;font-weight:600}nav a.l:hover,nav a.on{color:#fff;background:var(--card2)}
+.wrap{max-width:1180px;margin:0 auto;padding:24px}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:14px}.btn:hover{filter:brightness(1.12)}
+.btn.s{background:var(--card2);border:1px solid var(--ln)}.btn.g{background:var(--ok)}.btn.r{background:var(--bad)}.btn.sm{padding:6px 12px;font-size:13px}.btn:disabled{opacity:.5;cursor:not-allowed}
+input,select{width:100%;background:#071d2f;border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:10px 12px;font-size:14px}input:focus,select:focus{outline:2px solid var(--ac);border-color:transparent}
+label{display:block;font-size:12px;color:var(--mu);margin:12px 0 4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:20px}
+.hero{background:linear-gradient(120deg,#0a3a6b,#061827 60%);border:1px solid var(--ln);border-radius:20px;padding:36px;margin-bottom:22px}
+.hero h1{font-size:34px}.hero p{color:var(--mu);max-width:560px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.bar>*{flex:1;min-width:140px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.vc{background:var(--card);border:1px solid var(--ln);border-radius:16px;overflow:hidden;transition:.15s;display:block;color:inherit}.vc:hover{transform:translateY(-3px);border-color:var(--ac)}
+.ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800;color:#ffffff55;background:linear-gradient(135deg,#0d4a85,#0b2235);position:relative;background-size:cover;background-position:center}
+.vc .b{padding:14px 16px}.vc h3{font-size:16px;margin:0 0 4px}.m{color:var(--mu);font-size:13px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:#ffffff18;text-transform:uppercase}
+.tag.active{background:#22c55e30;color:#4ade80}.tag.upcoming{background:#f59e0b30;color:#fbbf24}.tag.ended,.tag.sold{background:#ef444430;color:#f87171}
+.ph .tag{position:absolute;top:10px;left:10px;color:#fff}.price{font-size:20px;font-weight:800}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cd{font-variant-numeric:tabular-nums;font-weight:700;color:var(--warn)}.cd.low{color:var(--bad)}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}@media(max-width:860px){.two{grid-template-columns:1fr}.hero h1{font-size:26px}}
+.gal{height:340px;border-radius:16px;font-size:90px}.thumbs{display:flex;gap:8px;margin-top:8px}.thumbs div{width:70px;height:50px;border-radius:8px;background-size:cover;cursor:pointer;border:2px solid var(--ln)}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.spec div{background:var(--card2);padding:10px 12px;border-radius:10px}.spec small{display:block;color:var(--mu);font-size:11px;text-transform:uppercase}
+.big{font-size:32px;font-weight:800}.big small{font-size:13px;color:var(--mu);font-weight:500}
+table{width:100%;border-collapse:collapse}td,th{padding:10px 8px;border-bottom:1px solid var(--ln);text-align:left;font-size:14px}th{color:var(--mu);font-size:12px;text-transform:uppercase}
+.cr{color:var(--ok);font-weight:700}.db{color:var(--bad);font-weight:700}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}.tabs button{background:var(--card);border:1px solid var(--ln);color:var(--mu);padding:8px 16px;border-radius:99px;cursor:pointer;font-weight:600}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.auth{max-width:420px;margin:40px auto}.empty{text-align:center;color:var(--mu);padding:40px}
+#toast{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:8px;z-index:9}#toast div{background:var(--card2);border-left:4px solid var(--ac);padding:12px 16px;border-radius:10px;box-shadow:0 8px 30px #0008;max-width:340px}#toast .e{border-color:var(--bad)}#toast .o{border-color:var(--ok)}
+.pill{background:var(--card2);border:1px solid var(--ln);padding:5px 12px;border-radius:99px;font-weight:700;color:var(--ac2)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}details{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px 18px;margin-bottom:10px}summary{cursor:pointer;font-weight:700}
+.pw{position:relative}.pw input{padding-right:64px}.pw .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--ac2);cursor:pointer;font-weight:700;font-size:12px;padding:6px 8px}
+.hero{display:flex;align-items:center;gap:20px;overflow:hidden}.hero .tx{flex:1}.art{flex:0 0 44%;position:relative;min-height:170px}.art svg,.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.art img{border-radius:14px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 30%);mask-image:linear-gradient(90deg,transparent,#000 30%)}@media(max-width:760px){.art{display:none}}
+.prof{display:grid;grid-template-columns:240px 1fr;gap:22px}@media(max-width:860px){.prof{grid-template-columns:1fr}}
+.side{text-align:center;align-self:start}.avatar{width:64px;height:64px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 8px}
+.sl{display:flex;flex-direction:column;gap:4px;margin-top:14px;text-align:left}@media(max-width:860px){.sl{flex-direction:row;flex-wrap:wrap}}.sl a{padding:9px 12px;border-radius:10px;color:var(--mu);font-weight:600}.sl a.on,.sl a:hover{background:var(--card2);color:#fff}
+.me{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:99px;background:var(--card2);border:1px solid var(--ln);color:#fff;font-weight:600}.me i{width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800}
+.drop{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;display:block;border:2px dashed var(--ln);border-radius:12px;padding:18px;text-align:center;cursor:pointer;color:var(--mu)}.drop:hover{border-color:var(--ac)}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}.pt{position:relative;aspect-ratio:4/3;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--ln)}
+.pt button{position:absolute;top:4px;right:4px;border:0;background:#000a;color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer}.pt b{position:absolute;bottom:4px;left:4px;font-size:10px;background:var(--ac);padding:2px 6px;border-radius:6px}
+.hint{font-size:12px;color:var(--mu);margin-top:4px}.hint.ok{color:var(--ok)}.hint.bad{color:var(--bad)}.box{background:var(--card2);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mu);margin-top:6px}
+.ov{position:fixed;inset:0;background:#000c;z-index:20;display:flex;align-items:center;justify-content:center}.mdl{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:24px;max-width:420px;width:92%}.mdl .row{margin-top:16px}
+.lb{flex-direction:column;padding:14px}.lb .stage{flex:1;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0}.lb .stage img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;transition:transform .15s}.lb .stage img.z{transform:scale(2.5);cursor:zoom-out}
+.lb .x,.lb .nv{position:absolute;background:#ffffff22;color:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:22px;cursor:pointer;z-index:2}.lb .x{top:14px;right:16px}.lb .nv{top:50%;transform:translateY(-50%)}.lb .p{left:14px}.lb .n{right:14px}.lb .ct{color:var(--mu);font-size:13px;margin:6px 0}
+.tb{display:flex;gap:8px;overflow-x:auto;max-width:100%;padding:6px}.tb img{height:56px;border-radius:6px;opacity:.5;cursor:pointer;border:2px solid transparent}.tb img.on{opacity:1;border-color:var(--ac)}
+body{background:var(--bg)}:root{--gold:#ffb703}
+nav{padding:10px 28px}.logo{display:flex;align-items:center;gap:6px;margin-right:6px}.hm{display:flex;align-items:center;gap:6px}.hm svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.sp{flex:1}
+.hero{background:linear-gradient(120deg,#0b4a8c,#061827 62%);position:relative;padding:44px}.hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:38px 38px;pointer-events:none}.hero>*{position:relative}.hero h1{font-size:40px;line-height:1.15}
+.hs{display:flex;gap:8px;margin-top:20px;background:#061827cc;border:1px solid var(--ln);padding:8px;border-radius:14px;max-width:620px}.hs input{border:0;background:transparent;flex:2}.hs select{flex:1;border:0;background:#0f2c45}.hs .btn{background:var(--gold);color:#1a1200}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:-6px 0 28px}@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.hero{padding:26px}.hero h1{font-size:28px}.hs{flex-wrap:wrap}}
+.stat{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:16px 18px}.stat b{display:block;font-size:28px;color:#fff}.stat span{color:var(--mu);font-size:13px}.stat.live b{color:var(--ok)}
+.sec{margin:34px 0}.sec .row{margin-bottom:14px;align-items:flex-end}.sec h2{font-size:24px;margin:0}.sec>.row>a{font-weight:700}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.cat{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:18px;text-align:center;color:var(--tx);transition:.15s}.cat:hover{border-color:var(--gold);transform:translateY(-2px)}.cat i{font-style:normal;font-size:30px;display:block}.cat b{display:block;margin-top:6px}.cat span{font-size:12px;color:var(--mu)}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.how div{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:20px}.how i{font-style:normal;display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#1a1200;font-weight:800;align-items:center;justify-content:center;margin-bottom:10px}.how b{display:block;margin-bottom:4px}
+.cta{background:linear-gradient(120deg,#0b4a8c,#0f2c45);border:1px solid var(--ln);border-radius:18px;padding:30px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.cta .btn{background:var(--gold);color:#1a1200}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.wrap.fadein{animation:fd .18s ease-out}@keyframes fd{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.vc .ph{height:175px}.vc .b{padding:14px 16px 16px}.vc h3{font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.chips span{font-size:11px;background:var(--card2);border:1px solid var(--ln);padding:3px 8px;border-radius:6px;color:var(--mu)}
+.star{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:0;background:#000a;color:#bbb;cursor:pointer;font-size:16px}.star.on{color:var(--gold)}.rm{position:absolute;bottom:10px;left:10px;background:#16a34add;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px}
+.tl{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--ln);margin-top:12px;padding-top:10px}
+.browse{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}@media(max-width:860px){.browse{grid-template-columns:1fr}}.flt{position:sticky;top:76px}.flt h3{display:flex;justify-content:space-between;align-items:center}.flt .f2{gap:8px}
+.ft{background:#04111d;border-top:1px solid var(--ln);margin-top:40px;padding:36px 24px 18px;text-align:left}.ftg{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:24px}@media(max-width:860px){.ftg{grid-template-columns:1fr 1fr}}.ft h4{margin:0 0 10px;color:#fff;font-size:14px}.ft a{display:block;color:var(--mu);padding:3px 0;font-size:14px}.ft a:hover{color:#fff}.ft .cp{max-width:1180px;margin:22px auto 0;border-top:1px solid var(--ln);padding-top:14px}
+@media(max-width:760px){.hs{flex-direction:column}.hs>*{flex:none;width:100%}.hs input,.hs select{padding:12px}}
+footer{text-align:center;color:var(--mu);padding:30px;font-size:13px}
+</style></head><body>
+<nav id="nav"></nav><div class="wrap" id="app"></div><footer class="ft"><div class="ftg"><div><div class="logo">Bid<b>My</b>Car</div><p class="m">A transparent online vehicle auction platform — live timers, wallet-secured payments and listings with verified photos.</p></div><div><h4>Marketplace</h4><a href="#/auctions">Browse auctions</a><a href="#/auctions?s=buy">Buy It Now</a><a href="#/watchlist">Watchlist</a></div><div><h4>Sell</h4><a href="#/new">List a vehicle</a><a href="#/profile/selling">Selling history</a></div><div><h4>Account</h4><a href="#/profile">My profile</a><a href="#/profile/wallet">Wallet</a><a href="#/profile/bidding">Bidding history</a><a href="#/profile/buying">Buying history</a></div><div><h4>Help</h4><a href="#/faq">FAQ</a></div></div><div class="m cp">© Bid My Car</div></footer><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app'),API='/api';
+const inr=n=>'₹'+Number(n||0).toLocaleString('en-IN'),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dt=d=>new Date(d).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+let tok=localStorage.tok,me=JSON.parse(localStorage.me||'null'),timers=[],wallet=null;
+function toast(m,t=''){const d=document.createElement('div');d.className=t;d.textContent=m;$('#toast').append(d);setTimeout(()=>d.remove(),4000)}
+async function api(p,o={}){const h={'Content-Type':'application/json'};if(tok)h.Authorization='Bearer '+tok;
+ let r,j;try{r=await fetch(API+p,{...o,headers:h,body:o.body&&JSON.stringify(o.body)});j=await r.json()}catch(e){throw{message:'Cannot reach server'}}
+ if(r.status===401&&tok){logout(true)}if(!r.ok||j.success===false)throw {...j,status:r.status};return j}
+const act=async(fn,ok)=>{try{const r=await fn();if(ok)toast(ok,'o');return r}catch(e){toast(e.message||'Something went wrong','e')}};
+function logout(exp){tok=me=null;wallet=null;localStorage.clear();if(exp)toast('Session expired — please log in','e');else toast('Logged out','o');nav();const h=exp?'#/login':'#/';if(location.hash===h)route();else location.hash=h}
+const sty=(a)=>({active:'Live',upcoming:'Upcoming',ended:'Ended'}[a]||a);
+function nav(){const h=(location.hash||'#/').split('?')[0];const L=(u,t)=>`<a class="l ${h===u?'on':''}" href="${u}">${t}</a>`;
+ const home='<a class="l hm '+(h==='#/'?'on':'')+'" href="#/"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>Home</a>';
+ $('#nav').innerHTML=`<a class="logo" href="#/">Bid<b>My</b>Car</a>${home}<span class="sp"></span>${L('#/auctions','Auctions')}${L('#/new','Sell')}${me?L('#/watchlist','Watchlist')+`<a class="me" href="#/profile"><i>${esc(me.name[0]).toUpperCase()}</i>${esc(me.name.split(' ')[0])}</a>`:L('#/login','Log in')+'<a class="btn sm" href="#/register">Sign up</a>'}`}
+const setW=b=>{wallet=b;const e=$('#wb');if(e)e.textContent=inr(b)};
+// countdown
+function cd(end,cls=''){return `<span class="cd ${cls}" data-end="${new Date(end).getTime()}"></span>`}
+const tick=()=>{if(document.hidden)return;document.querySelectorAll('.cd').forEach(e=>{const s=Math.floor((e.dataset.end-Date.now())/1000);let t;
+ if(s<=0){t='Ended';e.classList.remove('low')}else{const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);t=(d?d+'d ':'')+(h||d?h+'h ':'')+m+'m '+String(s%60).padStart(2,'0')+'s';e.classList.toggle('low',s<120)}
+ if(e.textContent!==t)e.textContent=t})};
+setInterval(tick,1000);new MutationObserver(tick).observe(document.getElementById('app'),{childList:true,subtree:true});
+const need=()=>{if(!me){sessionStorage.next=location.hash;location.hash='#/login';toast('Please log in first');return false}return true};
+const clear=()=>{timers.forEach(clearInterval);timers=[]};
+const COVERS={},WL=new Set(),endOf=a=>new Date(a.current_end_time||a.end_time),pr=i=>Number(i.current_bid)>0?Number(i.current_bid):Number(i.starting_bid||i.buy_it_now_price||0);
+const car=a=>{const id=a.vehicle_id||a.id,cv=COVERS[id],sold=a.sale_status==='sold',live=a.status==='active',t=a.title||a.vehicle_title;
+ return `<a class="vc" href="#/v/${id}"><div class="ph">${cv?`<img src="${esc(cv)}" loading="lazy" decoding="async" alt="">`:esc((a.make||'?')[0])}<span class="tag ${sold?'sold':a.status||''}">${sold?'Sold':a.status?(live?'● Live':sty(a.status)):'Buy now'}</span>${me?`<button class="star ${WL.has(id)?'on':''}" data-wl="${id}" title="Watchlist">★</button>`:''}${Number(a.reserve_met)?'<span class="rm">Reserve met</span>':''}</div><div class="b"><div class="m">${a.lot_number?'Lot '+esc(a.lot_number):'&nbsp;'}</div><h3>${esc(t)}</h3>
+ <div class="chips">${[a.year,a.fuel_type,a.transmission,a.category].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+ <div class="row"><div><div class="m">${a.status?(Number(a.current_bid)>0?'Current bid':'Starting bid'):'Price'}</div><div class="price">${inr(a.status?pr(a):a.buy_it_now_price||pr(a))}</div></div><div class="m" style="text-align:right">${a.bid_count||0} bids</div></div>
+ ${a.status==='active'?`<div class="tl"><span class="m">Time left</span>${cd(a.current_end_time||a.end_time)}</div>`:a.status==='upcoming'?`<div class="tl"><span class="m">Starts in</span>${cd(a.start_time)}</div>`:''}</div></a>`};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-wl]');if(!b)return;e.preventDefault();e.stopPropagation();const id=b.dataset.wl,on=WL.has(id);
+ act(async()=>{await api('/vehicles/'+id+'/watchlist',{method:on?'DELETE':'POST'});on?WL.delete(id):WL.add(id);document.querySelectorAll(`[data-wl="${id}"]`).forEach(x=>x.classList.toggle('on',!on))},on?null:'Added to watchlist')},true);
+async function loadItems(){const[au,ve,ls]=await Promise.all([api('/auctions'),api('/vehicles'),api('/vehicles/listable')]);Object.assign(COVERS,ls.covers);
+ if(me){try{const w=await api('/vehicles/my-watchlist');WL.clear();w.watchlist.forEach(x=>WL.add(x.vehicle_id))}catch{}}
+ const ids=new Set(au.auctions.map(a=>a.vehicle_id));
+ return[...au.auctions.filter(a=>COVERS[a.vehicle_id]),...ve.vehicles.filter(v=>COVERS[v.id]&&!ids.has(v.id)&&v.sale_status!=='sold'&&v.buy_it_now_price).map(v=>({...v,status:null}))]}
+// ---------- pages ----------
+const P={};
+const ARTSTR='<div class="art"><svg viewBox="0 0 520 200" aria-hidden="true"><defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#39a7ff"/><stop offset="1" stop-color="#0a5bd6"/></linearGradient></defs><ellipse cx="260" cy="178" rx="225" ry="10" fill="#000" opacity=".35"/><path d="M36 140c0-14 8-22 24-26l64-14c14-24 32-40 62-44 34-4 82-4 112 2 28 6 52 24 72 44l38 8c22 4 34 14 34 34v10c0 6-4 10-10 10H46c-6 0-10-4-10-10z" fill="url(#cg)"/><path d="M150 98c10-18 22-30 44-32 30-3 70-3 98 1 22 4 40 18 56 34z" fill="#061827" opacity=".78"/><path d="M262 66v32" stroke="#39a7ff" stroke-width="3"/><rect x="418" y="116" width="34" height="8" rx="4" fill="#fff" opacity=".9"/><rect x="48" y="118" width="24" height="8" rx="4" fill="#ef4444"/><circle cx="136" cy="156" r="30" fill="#0a1522"/><circle cx="136" cy="156" r="14" fill="#8fa6bd"/><circle cx="392" cy="156" r="30" fill="#0a1522"/><circle cx="392" cy="156" r="14" fill="#8fa6bd"/></svg><img src="hero.jpg" alt="" onerror="this.remove()"></div>';
+const ICON={Sedan:'🚗',SUV:'🚙',Hatchback:'🚘',Truck:'🛻',Luxury:'💎',Sports:'🏎️',Bike:'🏍️',Other:'🚐'};
+P.home=async()=>{app.innerHTML='<div class="empty">Loading…</div>';const items=await loadItems();
+ const live=items.filter(i=>i.status==='active').sort((a,b)=>endOf(a)-endOf(b)),up=items.filter(i=>i.status==='upcoming').sort((a,b)=>new Date(a.start_time)-new Date(b.start_time)),bin=items.filter(i=>!i.status),cats={};
+ items.forEach(i=>i.category&&(cats[i.category]=(cats[i.category]||0)+1));
+ const sec=(t,sub,l,link)=>l.length?`<section class="sec"><div class="row"><div><h2>${t}</h2><div class="m">${sub}</div></div><a href="${link}">View all →</a></div><div class="grid">${l.slice(0,4).map(car).join('')}</div></section>`:'';
+ app.innerHTML=`<div class="hero"><div class="tx"><h1>Find your next car.<br>Bid with confidence.</h1><p>Live auctions with real-time timers, secure wallet payments and transparent bidding.</p>
+ <form class="hs" id="hs"><input id="hq" placeholder="Search make, model or title…"><select id="hc"><option value="">All categories</option>${Object.keys(cats).map(c=>`<option>${esc(c)}</option>`).join('')}</select><button class="btn">Search</button></form></div>`+ARTSTR+`</div>
+ <div class="stats"><div class="stat live"><b>${live.length}</b><span>Live auctions now</span></div><div class="stat"><b>${up.length}</b><span>Upcoming auctions</span></div><div class="stat"><b>${items.length}</b><span>Vehicles available</span></div><div class="stat"><b>${live.reduce((n,i)=>n+Number(i.bid_count||0),0)}</b><span>Bids on live lots</span></div></div>
+ ${Object.keys(cats).length?`<section class="sec" style="margin-top:0"><div class="row"><h2>Browse by category</h2></div><div class="cats">${Object.entries(cats).map(([c,n])=>`<a class="cat" href="#/auctions?c=${encodeURIComponent(c)}&s=all"><i>${ICON[c]||'🚗'}</i><b>${esc(c)}</b><span>${n} vehicle${n>1?'s':''}</span></a>`).join('')}</div></section>`:''}
+ ${sec('Ending soon','Place your bids before the timer runs out',live,'#/auctions?s=live')}${sec('Upcoming auctions','Add them to your watchlist and be ready',up,'#/auctions?s=upcoming')}${sec('Buy It Now','Skip the bidding and buy instantly',bin,'#/auctions?s=buy')}
+ ${items.length?'':'<div class="card empty">No vehicles are listed yet. Be the first to sell!</div>'}
+ <section class="sec"><div class="row"><h2>How it works</h2></div><div class="how"><div><i>1</i><b>Create your account</b><span class="m">Sign up, verify your email and add money to your wallet.</span></div><div><i>2</i><b>Find a vehicle</b><span class="m">Browse listings with photos, filters and a watchlist.</span></div><div><i>3</i><b>Bid before time ends</b><span class="m">A bid in the last 2 minutes extends the auction.</span></div><div><i>4</i><b>Win &amp; pay securely</b><span class="m">Confirm payment from your wallet — the seller is paid instantly.</span></div></div></section>
+ <div class="cta"><div><h2 style="margin:0">Have a car to sell?</h2><div class="m">List it with 6–12 photos and let buyers compete for it.</div></div><a class="btn" href="#/new">List your vehicle</a></div>`;
+ $('#hs').onsubmit=e=>{e.preventDefault();const p=new URLSearchParams();if($('#hq').value.trim())p.set('q',$('#hq').value.trim());if($('#hc').value)p.set('c',$('#hc').value);p.set('s','all');location.hash='#/auctions?'+p}};
+P.auctions=async()=>{app.innerHTML='<div class="empty">Loading…</div>';const items=await loadItems(),Q=Object.fromEntries(new URLSearchParams(location.hash.split('?')[1]||''));
+ const U=k=>[...new Set(items.map(i=>i[k]).filter(Boolean))].sort(),st={q:Q.q||'',c:Q.c||'',s:Q.s||'open',make:'',fuel_type:'',transmission:'',ymin:'',ymax:'',pmax:'',sort:'end'};
+ const S=(id,l,arr)=>`<label>${l}</label><select id="${id}"><option value="">All</option>${arr.map(x=>`<option ${x===st[id]?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+ app.innerHTML=`<div class="browse"><aside class="card flt"><h3>Filters <a href="#/auctions" style="font-size:12px">Clear</a></h3><label>Search</label><input id="q" value="${esc(st.q)}" placeholder="Make, model, title…">
+ <label>Status</label><select id="s">${[['open','Open (live, upcoming, buy now)'],['live','Live now'],['upcoming','Upcoming'],['buy','Buy It Now'],['ended','Ended'],['all','All']].map(x=>`<option value="${x[0]}" ${x[0]===st.s?'selected':''}>${x[1]}</option>`).join('')}</select>
+ ${S('c','Category',U('category'))}${S('make','Make',U('make'))}${S('fuel_type','Fuel',U('fuel_type'))}${S('transmission','Transmission',U('transmission'))}
+ <div class="f2"><div><label>Year from</label><input id="ymin" type="number" placeholder="2010"></div><div><label>Year to</label><input id="ymax" type="number" placeholder="2026"></div></div><label>Max price (₹)</label><input id="pmax" type="number" placeholder="e.g. 500000"></aside>
+ <div><div class="row" style="margin-bottom:14px"><h2 style="margin:0" id="cnt"></h2><select id="sort" style="width:auto"><option value="end">Ending soonest</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option><option value="yr">Newest year</option><option value="bids">Most bids</option></select></div><div class="grid" id="g"></div></div></div>`;
+ const draw=()=>{let f=items.filter(i=>{const t=((i.title||i.vehicle_title||'')+' '+i.make+' '+i.model).toLowerCase(),p=pr(i);
+  const sOk={open:i.status!=='ended',live:i.status==='active',upcoming:i.status==='upcoming',buy:!i.status,ended:i.status==='ended',all:true}[st.s];
+  return sOk&&t.includes(st.q.toLowerCase())&&(!st.c||i.category===st.c)&&(!st.make||i.make===st.make)&&(!st.fuel_type||i.fuel_type===st.fuel_type)&&(!st.transmission||i.transmission===st.transmission)&&(!st.ymin||i.year>=+st.ymin)&&(!st.ymax||i.year<=+st.ymax)&&(!st.pmax||p<=+st.pmax)});
+  f.sort({end:(a,b)=>(a.status?+endOf(a):9e15)-(b.status?+endOf(b):9e15),lo:(a,b)=>pr(a)-pr(b),hi:(a,b)=>pr(b)-pr(a),yr:(a,b)=>b.year-a.year,bids:(a,b)=>(b.bid_count||0)-(a.bid_count||0)}[st.sort]);
+  $('#cnt').textContent=f.length+' vehicle'+(f.length===1?'':'s');$('#g').innerHTML=f.length?f.map(car).join(''):'<div class="card empty" style="grid-column:1/-1">No vehicles match your filters.</div>'};
+ ['q','s','c','make','fuel_type','transmission','ymin','ymax','pmax','sort'].forEach(k=>{const e=$('#'+k);e.oninput=()=>{st[k]=e.value;draw()}});draw()};
+P.v=async id=>{app.innerHTML='<div class="empty">Loading…</div>';
+ const[{vehicle:v},{images},{auctions}]=await Promise.all([api('/vehicles/'+id),api('/vehicles/'+id+'/images'),api('/auctions')]);
+ const a0=auctions.find(a=>a.vehicle_id===id);let wl=false,img=0;
+ if(me){const w=await api('/vehicles/my-watchlist').catch(()=>({watchlist:[]}));wl=w.watchlist.some(x=>x.vehicle_id===id)}
+ const own=me&&Number(me.id)===Number(v.seller_id),imgU=i=>i&&(i.image_url||i.url||i.image_path);
+ const render=async()=>{let a=null,bids=[],win=null;
+  if(a0){const r=await api('/auctions/'+a0.id).catch(()=>null);if(r){a=r.auction;win=r.winner}bids=(await api('/auctions/'+a0.id+'/bids').catch(()=>({bids:[]}))).bids}
+  const sale=(v.sale_status==='sold'||(a&&(a.status==='ended'||a.settlement_status==='completed')))?(await api('/vehicles/'+id+'/sale').catch(()=>({}))).sale:null;
+  const sold=v.sale_status==='sold'||!!sale,live=a&&a.status==='active',bin=v.buy_it_now_price&&!sold&&Number(v.buy_it_now_price)>0;
+  const minBid=a?(Number(a.current_bid)>0?Number(a.current_bid)+1000:Number(a.starting_bid)):0,iWin=a&&me&&Number(a.high_bidder_id)===Number(me.id);
+  const keep=$('#bidamt')?.value;
+  app.innerHTML=`<a href="#/auctions">← All vehicles</a><div class="two" style="margin-top:12px"><div>
+  <div class="ph gal" ${images[img]?`style="background-image:url('${esc(imgU(images[img]))}')"`:''}>${images[img]?`<span class="tag" style="left:auto;right:10px;background:#000a">🔍 Click to enlarge</span>`:esc(v.make[0])}</div>
+  ${images.length>1?`<div class="thumbs">${images.map((x,i)=>`<div data-img="${i}" style="background-image:url('${esc(imgU(x))}')"></div>`).join('')}</div>`:''}
+  <div class="card" style="margin-top:18px"><h2>${esc(v.title)}</h2><div class="m">Lot ${esc(v.lot_number)} · ${v.year} ${esc(v.make)} ${esc(v.model)}</div>
+  <div class="spec">${[['Category',v.category],['Fuel',v.fuel_type],['Transmission',v.transmission],['Condition',v.condition_type],['Run & drive',v.run_and_drive],['Primary damage',v.primary_damage],['Secondary damage',v.secondary_damage],['Est. retail value',v.est_retail_value&&inr(v.est_retail_value)],['Reserve price',Number(v.reserve_price)>0&&inr(v.reserve_price)],['Reg. no',v.reg_no],['VIN',v.vin]].filter(x=>x[1]).map(x=>`<div><small>${x[0]}</small>${esc(x[1])}</div>`).join('')}</div></div></div>
+  <div><div class="card"><div class="row"><span class="tag ${sold?'sold':a?a.status:''}">${sold?'Sold':a?sty(a.status):'Listed'}</span><button class="btn s sm" id="wl">${wl?'★ Watching':'☆ Watch'}</button></div>
+  ${sale?`<div style="margin:16px 0"><div class="m">Sold price</div><div class="big">${inr(sale.price)}</div></div><div class="spec"><div><small>Winner / buyer</small>${esc(sale.buyer_name)}</div><div><small>Sold via</small>${esc(sale.method)}</div><div><small>Payment</small><span class="cr">Completed</span></div><div><small>Sold on</small>${dt(sale.sold_at)}</div></div>`:a?`<div style="margin:16px 0"><div class="m">${a.status==='ended'?'Final bid':Number(a.current_bid)>0?'Current bid':'Starting bid'}</div><div class="big">${inr(Number(a.current_bid)||a.starting_bid)} <small>${a.bid_count} bids${a.high_bidder?' · by '+esc(a.high_bidder):''}</small></div>
+  <div class="row" style="margin-top:8px"><span class="m">${a.status==='upcoming'?'Starts in':'Time left'}</span>${cd(a.status==='upcoming'?a.start_time:a.current_end_time||a.end_time)}</div>
+  <div class="m" style="margin-top:6px">Reserve: ${Number(a.reserve_met)?'<b style="color:var(--ok)">Met</b>':'Not met'} · Bids in the last 2 min extend the auction</div></div>
+  ${live&&!sold?own?'<div class="m">You own this listing.</div>':`<label>Your bid (min ${inr(minBid)})</label><div style="display:flex;gap:8px"><input id="bidamt" type="number" step="1000" value="${keep||minBid}"><button class="btn" id="bid">Place bid</button></div><div class="m" style="margin-top:6px">${iWin?'✓ You are the highest bidder':''}</div>`:''}
+  ${a.status==='ended'&&win&&me&&Number(win.bidder_id)===Number(me.id)&&a.settlement_status!=='completed'?`<div style="margin-top:12px"><div class="m">You won! Pay from your wallet${a.payment_deadline?' before '+dt(a.payment_deadline):''}.</div><button class="btn g" id="pay" style="width:100%;margin-top:8px">Pay ${inr(a.current_bid)}</button></div>`:''}
+  ${a.status==='ended'?`<div class="m" style="margin-top:10px">${a.settlement_status==='no_winner'||(!Number(a.reserve_met)&&a.settlement_status!=='completed')?'Ended with no winner (reserve not met)':`Payment status: <span class="tag ${a.settlement_status==='completed'?'active':'upcoming'}">${a.settlement_status==='completed'?'Paid':'Pending'}</span>${a.settlement_status==='completed'?' · Sold to '+esc(win?.bidder_name||a.high_bidder):''}`}</div>`:''}`
+  :`<div class="big">${bin?inr(v.buy_it_now_price):'—'}</div>`}
+  ${bin&&!own&&!(a&&a.status==='ended'&&a.settlement_status==='completed')?`<button class="btn g" id="buy" style="width:100%;margin-top:14px">Buy It Now · ${inr(v.buy_it_now_price)}</button>`:''}</div>
+  ${a?`<div class="card" style="margin-top:18px"><h3>Bid history</h3>${bids.length?`<table>${bids.slice(0,12).map((b,i)=>`<tr><td>${esc(b.bidder_name)}${i===0?' 🏆':''}</td><td><b>${inr(b.bid_amount)}</b></td><td class="m">${dt(b.bid_time)}</td></tr>`).join('')}</table>`:'<div class="m">No bids yet — be the first!</div>'}</div>`:''}</div></div>`;
+  document.querySelectorAll('[data-img]').forEach(e=>e.onclick=()=>{img=+e.dataset.img;render()});const gl=document.querySelector('.gal');if(images.length){gl.style.cursor='zoom-in';gl.title='Click to view full size';gl.onclick=()=>lightbox(images.map(imgU),img)}
+  $('#wl').onclick=()=>need()&&act(async()=>{await api('/vehicles/'+id+'/watchlist',{method:wl?'DELETE':'POST'});wl=!wl;$('#wl').textContent=wl?'★ Watching':'☆ Watch'},wl?null:'Added to watchlist');
+  if($('#bid'))$('#bid').onclick=()=>need()&&act(async()=>{const r=await api('/auctions/'+a.id+'/bids',{method:'POST',body:{bid_amount:$('#bidamt').value}});toast(r.message,'o');if(r.auction&&r.auction.instant_win){await render();payModal(a.id,Number(r.bid.bid_amount),paid=>paid?location.hash='#/profile/buying':render())}else render()});
+  if($('#buy'))$('#buy').onclick=()=>need()&&confirm('Buy this vehicle for '+inr(v.buy_it_now_price)+' from your wallet?')&&act(async()=>{await api('/vehicles/'+id+'/buy',{method:'POST'});location.hash='#/profile/buying'},'Purchase complete!');
+  if($('#pay'))$('#pay').onclick=()=>payModal(a.id,Number(a.current_bid),paid=>paid?location.hash='#/profile/buying':render());
+  if(!window.__fix)window.__fix=1};
+ await render();const key=async()=>{if(!a0)return'';const[r,b]=await Promise.all([api('/auctions/'+a0.id).catch(()=>null),api('/auctions/'+a0.id+'/bids').catch(()=>null)]);return r?[r.auction.current_bid,r.auction.bid_count,r.auction.status,r.auction.settlement_status,b?b.bids.length:0].join('|'):''};
+ let sig=await key();timers.push(setInterval(async()=>{if(document.hidden||!a0)return;const k=await key();if(k!==sig&&(!document.activeElement||document.activeElement.id!=='bidamt')){sig=k;render()}},4000))};
+
+const PW=(id,l,ac)=>`<label>${l}</label><div class="pw"><input id="${id}" type="password" autocomplete="${ac}"><button type="button" class="eye" data-eye="${id}" aria-label="Show or hide password">Show</button></div>`;
+const wireEye=()=>document.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=$('#'+b.dataset.eye),sh=i.type==='password';i.type=sh?'text':'password';b.textContent=sh?'Hide':'Show'});
+const wirePhone=id=>{const i=$('#'+id);i.setAttribute('inputmode','numeric');i.maxLength=10;i.autocomplete='tel-national';
+ i.oninput=()=>{let d=i.value.replace(/\D/g,'');if(d.length>=12&&d.startsWith('91'))d=d.slice(2);i.value=d.slice(0,10)};
+ i.onkeydown=e=>{if(e.key.length===1&&!/\d/.test(e.key)&&!e.ctrlKey&&!e.metaKey)e.preventDefault()}};
+const okPhone=v=>/^[6-9]\d{9}$/.test(v);
+const okEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+function lightbox(urls,i){let z=false;const o=document.createElement('div');o.className='ov lb';document.body.append(o);
+ const close=()=>{o.remove();removeEventListener('keydown',key)},go=d=>{i=(i+d+urls.length)%urls.length;z=false;draw()};
+ const key=e=>{if(e.key==='Escape')close();if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)};addEventListener('keydown',key);
+ function draw(){o.innerHTML=`<button class="x" aria-label="Close">✕</button>${urls.length>1?'<button class="nv p" aria-label="Previous">‹</button><button class="nv n" aria-label="Next">›</button>':''}<div class="stage"><img src="${esc(urls[i])}" class="${z?'z':''}" alt=""></div><div class="ct">${i+1} / ${urls.length} · click the photo to zoom</div><div class="tb">${urls.map((u,k)=>`<img src="${esc(u)}" data-k="${k}" class="${k===i?'on':''}" alt="">`).join('')}</div>`;
+  o.querySelector('.x').onclick=close;if(urls.length>1){o.querySelector('.p').onclick=()=>go(-1);o.querySelector('.n').onclick=()=>go(1)}
+  const im=o.querySelector('.stage img');im.onclick=e=>{z=!z;im.classList.toggle('z',z);if(z){const r=im.getBoundingClientRect();im.style.transformOrigin=((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%'}};
+  im.onmousemove=e=>{if(z){const r=im.getBoundingClientRect();im.style.transformOrigin=((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%'}};
+  o.querySelectorAll('[data-k]').forEach(t=>t.onclick=()=>{i=+t.dataset.k;z=false;draw()})}
+ o.onclick=e=>{if(e.target===o)close()};draw()}
+async function payModal(aid,amt,done){let bal=0;try{bal=Number((await api('/auth/wallet')).wallet.balance)}catch(e){return}
+ const ok=bal>=amt,o=document.createElement('div');o.className='ov';
+ o.innerHTML=`<div class="mdl"><h3>🎉 You won this auction</h3><p class="m">Confirm payment to complete your purchase.</p><div class="spec"><div><small>Amount to pay</small><b>${inr(amt)}</b></div><div><small>Wallet balance</small>${inr(bal)}</div></div><p class="m">${ok?`${inr(amt)} will be deducted from your wallet and credited to the seller.`:`Your balance is short by ${inr(amt-bal)}. Add money in Profile → Wallet, then pay.`}</p><div class="row"><button class="btn s" id="pl">Pay later</button>${ok?'<button class="btn g" id="pc">Continue &amp; pay</button>':'<a class="btn" href="#/profile/wallet" id="pw">Add money</a>'}</div></div>`;
+ document.body.append(o);const close=p=>{o.remove();done&&done(p===true)};$('#pl').onclick=()=>close(false);if($('#pw'))$('#pw').onclick=()=>o.remove();
+ if($('#pc'))$('#pc').onclick=async()=>{$('#pc').disabled=true;try{await api('/auctions/'+aid+'/pay',{method:'POST'});toast('Payment complete — vehicle is yours!','o');close(true)}catch(e){toast(e.message||'Payment failed','e');$('#pc').disabled=false}}}
+const gate=fn=>(...a)=>me?fn(...a):(sessionStorage.next=location.hash,location.hash='#/login');
+P.login=()=>{app.innerHTML=`<form class="card auth" id="f" novalidate><h2>Welcome back</h2><label>Email</label><input id="e" type="email" autocomplete="username" autofocus>${PW('p','Password','current-password')}<button class="btn" type="submit" style="width:100%;margin-top:18px">Log in</button><p class="m" style="text-align:center"><a href="#/forgot">Forgot password?</a> · <a href="#/register">Create account</a></p></form>`;
+ wireEye();
+ $('#f').onsubmit=ev=>{ev.preventDefault();const email=$('#e').value.trim(),pw=$('#p').value;
+  if(!email||!pw)return toast('Please enter both email and password','e');
+  if(!okEmail(email))return toast('Please enter a valid email address','e');
+  act(async()=>{const r=await api('/auth/login',{method:'POST',body:{email,password:pw}});tok=r.token;me=r.user;localStorage.tok=tok;localStorage.me=JSON.stringify(me);wallet=null;nav();const n=sessionStorage.next;sessionStorage.removeItem('next');location.hash=n&&n!=='#/login'?n:'#/'},'Logged in')}};
+P.register=()=>{app.innerHTML=`<form class="card auth" id="f" novalidate><h2>Create account</h2><label>Full name</label><input id="n" autocomplete="name"><label>Email</label><input id="e" type="email" autocomplete="email"><label>Mobile number (10 digits)</label><input id="ph" placeholder="9876543210">${PW('p','Password (8+ characters)','new-password')}<button class="btn" type="submit" style="width:100%;margin-top:18px">Sign up</button><p class="m" style="text-align:center">Have an account? <a href="#/login">Log in</a></p></form>`;
+ wireEye();wirePhone('ph');
+ $('#f').onsubmit=ev=>{ev.preventDefault();const n=$('#n').value.trim(),e=$('#e').value.trim(),ph=$('#ph').value,p=$('#p').value;
+  if(n.length<2)return toast('Please enter your full name','e');
+  if(!okEmail(e))return toast('Please enter a valid email address','e');
+  if(!okPhone(ph))return toast('Mobile must be 10 digits and start with 6, 7, 8 or 9','e');
+  if(p.length<8)return toast('Password must be at least 8 characters','e');
+  act(async()=>{const r=await api('/auth/register',{method:'POST',body:{name:n,email:e,phone:ph,password:p}});app.innerHTML=`<div class="card auth" style="text-align:center"><h2>Check your email ✉️</h2><p class="m">${esc(r.message)}</p><a class="btn" href="#/login">Go to login</a></div>`})}};
+P.forgot=()=>{app.innerHTML=`<div class="card auth"><h2>Reset password</h2><label>Email</label><input id="e" type="email"><button class="btn" id="go" style="width:100%;margin-top:18px">Send reset link</button></div>`;
+ $('#go').onclick=()=>act(()=>api('/auth/forgot-password',{method:'POST',body:{email:$('#e').value}}).then(r=>toast(r.message,'o')))};
+P.watchlist=gate(async()=>{const[{watchlist:w},ls]=await Promise.all([api('/vehicles/my-watchlist'),api('/vehicles/listable')]);Object.assign(COVERS,ls.covers);
+ app.innerHTML=`<h2>Watchlist</h2>`+(w.length?`<div class="grid">${w.map(x=>car({...x,id:x.vehicle_id,status:null})).join('')}</div>`:'<div class="empty">Nothing here yet. Tap ☆ Watch on any vehicle.</div>')});
+const F=(id,l,v='',t='text',x='')=>`<div><label>${l}</label><input id="${id}" type="${t}" value="${esc(v)}" ${x}></div>`;
+const TABS=[['account','Account'],['wallet','Wallet'],['selling','Selling history'],['bidding','Bidding history'],['buying','Buying history']],T={};
+P.profile=gate(async tab=>{tab=TABS.some(t=>t[0]===tab)?tab:'account';
+ app.innerHTML=`<div class="prof"><aside class="card side"><div class="avatar">${esc(me.name[0]).toUpperCase()}</div><b>${esc(me.name)}</b><div class="m">${esc(me.email)}</div><div class="sl">${TABS.map(t=>`<a href="#/profile/${t[0]}" class="${t[0]===tab?'on':''}">${t[1]}</a>`).join('')}</div><button class="btn s sm" id="lo" style="width:100%;margin-top:14px">Log out</button></aside><section id="pc"><div class="empty">Loading…</div></section></div>`;
+ $('#lo').onclick=()=>logout();try{await T[tab]($('#pc'))}catch(e){$('#pc').innerHTML=`<div class="empty">⚠ ${esc(e.message||'Error')}</div>`}});
+const reload=t=>P.profile(t);
+T.account=async c=>{const{user:u}=await api('/auth/me'),ph=u.phone?String(u.phone).replace(/\D/g,'').slice(-10):'';
+ const view=()=>{c.innerHTML=`<div class="card" style="max-width:520px"><div class="row"><h2 style="margin:0">Account details</h2><button class="btn s sm" id="ed">Edit profile</button></div><div class="spec" style="grid-template-columns:1fr"><div><small>Full name</small>${esc(u.name)}</div><div><small>Email</small>${esc(u.email)}</div><div><small>Mobile number</small>${ph?'+91 '+ph:'<span class="m">Not added yet</span>'}</div></div></div>`;$('#ed').onclick=edit};
+ const edit=()=>{c.innerHTML=`<form class="card" id="f" novalidate style="max-width:520px"><h2>Edit profile</h2>${F('n','Full name',u.name)}<label>Email</label><input value="${esc(u.email)}" disabled>${F('ph','Mobile number (10 digits)',ph,'text','placeholder="9876543210"')}<div class="row" style="margin-top:16px;gap:10px"><button class="btn s" type="button" id="cn" style="flex:1">Cancel</button><button class="btn" type="submit" style="flex:2">Save profile</button></div></form>`;wirePhone('ph');$('#cn').onclick=view;
+  $('#f').onsubmit=ev=>{ev.preventDefault();if($('#n').value.trim().length<2)return toast('Please enter a valid name','e');if(!okPhone($('#ph').value))return toast('Mobile must be 10 digits and start with 6, 7, 8 or 9','e');
+   act(async()=>{const r=await api('/auth/profile',{method:'PUT',body:{name:$('#n').value.trim(),phone:$('#ph').value}});me.name=r.user.name;localStorage.me=JSON.stringify(me);nav();reload('account')},'Profile saved successfully')}};
+ view()};
+T.wallet=async c=>{const{wallet:w}=await api('/auth/wallet');
+ c.innerHTML=`<div class="two"><div class="card"><div class="m">Available balance</div><div class="big">${inr(w.balance)}</div><label>Add money</label><input id="amt" type="number" placeholder="Amount in ₹"><div class="bar" style="margin:10px 0 0">${[5000,10000,50000,100000].map(n=>`<button class="btn s sm" data-q="${n}">+${inr(n)}</button>`).join('')}</div><button class="btn" id="add" style="width:100%;margin-top:14px">Add to wallet</button><p class="m">Demo wallet — credits instantly. Connect a payment gateway before going live.</p></div>
+ <div class="card"><h3>Transactions</h3>${w.transactions.length?`<table>${w.transactions.map(t=>`<tr><td>${esc(t.description)}<div class="m">${dt(t.createdAt)}</div></td><td class="${t.type==='credit'?'cr':'db'}" style="text-align:right">${t.type==='credit'?'+':'−'}${inr(t.amount)}</td></tr>`).join('')}</table>`:'<div class="empty">No transactions yet</div>'}</div></div>`;
+ c.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>$('#amt').value=b.dataset.q);
+ $('#add').onclick=()=>act(async()=>{await api('/auth/wallet/add',{method:'POST',body:{amount:$('#amt').value}});reload('wallet')},'Money added')};
+T.selling=async c=>{const[{vehicles:vs},{auctions:as},{sales}]=await Promise.all([api('/vehicles/my-listings'),api('/auctions/my-auctions'),api('/vehicles/my-sales')]);
+ const row=v=>{const a=as.find(x=>x.vehicle_id===v.id),sl=sales[v.id],sold=!!sl||v.sale_status==='sold',ended=a&&a.status==='ended',won=ended&&Number(a.bid_count)>0&&Number(a.reserve_met);
+  const st=(sold?'<span class="tag sold">Sold</span>':a?`<span class="tag ${a.status}">${sty(a.status)}</span>`:v.sale_type==='auction'?`<a class="btn sm" href="#/schedule/${v.id}">Schedule</a>`:'<span class="tag active">Listed</span>')+(a?` <a href="#/sa/${a.id}">Details</a>`:'');
+  const pay=sl?'<span class="tag active">Completed</span>':won?'<span class="tag upcoming">Pending</span>':ended?'<span class="m">No winner</span>':'<span class="m">—</span>';
+  const price=a?(Number(a.current_bid)>0?a.current_bid:a.starting_bid):v.buy_it_now_price;
+  const act2=sold?'':a?(a.status==='upcoming'&&!a.bid_count?`<button class="btn r sm" data-can="${a.id}">Cancel</button>`:''):`<a class="btn s sm" href="#/new/${v.id}">Edit</a> <button class="btn r sm" data-del="${v.id}">Delete</button>`;
+  return`<tr><td><a href="#/v/${v.id}">${esc(v.title)}</a><div class="m">${esc(v.reg_no||v.lot_number)}</div></td><td>${v.sale_type==='auction'?'Auction':'Buy now'}</td><td>${inr(price)}</td><td>${st}</td><td>${pay}</td><td>${sl?`<b>${inr(sl.price)}</b><div class="m">to ${esc(sl.buyer_name)} · ${esc(sl.method)}</div><a href="#/profile/wallet">View in wallet</a>`:'<span class="m">—</span>'}</td><td style="text-align:right">${act2}</td></tr>`};
+ c.innerHTML=`<div class="row" style="margin-bottom:12px"><h2 style="margin:0">Selling history</h2><a class="btn" href="#/new">+ List a vehicle</a></div>`+(vs.length?`<div class="card" style="overflow-x:auto"><table><tr><th>Vehicle</th><th>Type</th><th>Price</th><th>Status</th><th>Payment</th><th>Sold for</th><th></th></tr>${vs.map(row).join('')}</table></div>`:'<div class="card empty">You have not listed any vehicle yet.</div>');
+ c.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>confirm('Delete this listing?')&&act(async()=>{await api('/vehicles/'+b.dataset.del,{method:'DELETE'});reload('selling')},'Deleted'));
+ c.querySelectorAll('[data-can]').forEach(b=>b.onclick=()=>confirm('Cancel this auction?')&&act(async()=>{await api('/auctions/'+b.dataset.can,{method:'DELETE'});reload('selling')},'Auction cancelled'))};
+P.schedule=gate(async id=>{const v=(await api('/vehicles/'+id)).vehicle,pad=n=>String(n).padStart(2,'0'),f=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`,s0=new Date(Date.now()+600000),e0=new Date(Date.now()+86400000);
+ app.innerHTML=`<a href="#/profile/selling">← Selling history</a><form class="card auth" id="f" style="margin-top:12px"><h3>Schedule auction</h3><div class="m">${esc(v.title)}${Number(v.reserve_price)?' · Reserve '+inr(v.reserve_price):''}</div>${F('st','Start',f(s0),'datetime-local')}${F('en','End',f(e0),'datetime-local')}${F('sb','Starting bid (₹)','','number')}<button class="btn" type="submit" id="go" style="width:100%;margin-top:16px">Schedule</button></form>`;
+ const q=x=>$(x).value.replace('T',' ')+':00';
+ $('#f').onsubmit=e=>{e.preventDefault();$('#go').disabled=true;act(async()=>{await api('/auctions',{method:'POST',body:{vehicle_id:id,start_time:q('#st'),end_time:q('#en'),starting_bid:$('#sb').value}});location.hash='#/'},'Auction scheduled successfully!').then(r=>{if(r===undefined&&$('#go'))$('#go').disabled=false})}});
+T.bidding=async c=>{const[{bids},{results}]=await Promise.all([api('/auctions/my-bids'),api('/auctions/my-results')]);
+ c.innerHTML=`<h2>Bidding history</h2><div class="card" style="overflow-x:auto;margin-bottom:18px"><h3>Auction results</h3>${results.length?`<table><tr><th>Vehicle</th><th>Final bid</th><th>My top bid</th><th>Result</th><th></th></tr>${results.map(r=>`<tr><td>${esc(r.vehicle.title)}</td><td>${inr(r.auction.final_bid)}</td><td>${inr(r.my_highest_bid)}</td><td><span class="tag ${r.result==='WON'?'active':'ended'}">${r.result}</span></td><td><a href="#/v/${r.vehicle_id}">${r.result==='WON'&&r.auction.settlement_status!=='completed'?'Pay now':'View'}</a></td></tr>`).join('')}</table>`:'<div class="empty">No finished auctions yet.</div>'}</div>
+ <div class="card" style="overflow-x:auto"><h3>All bids placed</h3>${bids.length?`<table><tr><th>Vehicle</th><th>My bid</th><th>Current bid</th><th>Status</th><th>Placed</th></tr>${bids.map(b=>`<tr><td><a href="#/v/${b.vehicle_id}">${esc(b.vehicle_title)}</a></td><td><b>${inr(b.bid_amount)}</b></td><td>${inr(b.current_bid)}</td><td><span class="tag ${b.status}">${sty(b.status)}</span></td><td class="m">${dt(b.bid_time)}</td></tr>`).join('')}</table>`:'<div class="empty">You have not placed any bids yet.</div>'}</div>`};
+T.buying=async c=>{const{purchases:p}=await api('/vehicles/my-purchases');
+ c.innerHTML=`<h2>Buying history</h2>`+(p.length?`<div class="card" style="overflow-x:auto"><table><tr><th>Vehicle</th><th>Bought via</th><th>Price paid</th><th>Date</th><th>Status</th></tr>${p.map(x=>`<tr><td><a href="#/v/${x.vehicle_id}">${esc(x.title)}</a><div class="m">${x.year} ${esc(x.make)} ${esc(x.model)}</div></td><td>${x.sale_type==='auction'?'Auction':'Buy It Now'}</td><td><b>${inr(x.purchase_price)}</b></td><td class="m">${dt(x.purchased_at)}</td><td><span class="tag active">${esc(x.status)}</span></td></tr>`).join('')}</table></div>`:'<div class="card empty">You have not bought any vehicle yet.</div>')};
+// ---- sell form ----
+const shrink=f=>new Promise((ok,no)=>{const r=new FileReader();r.onerror=no;r.onload=()=>{const i=new Image();i.onerror=no;i.onload=()=>{const k=Math.min(1,1280/Math.max(i.width,i.height)),cv=document.createElement('canvas');cv.width=i.width*k;cv.height=i.height*k;cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);ok(cv.toDataURL('image/jpeg',.82))};i.src=r.result};r.readAsDataURL(f)});
+const STATES='AN AP AR AS BR CH CG DD DL DN GA GJ HP HR JH JK KA KL LA LD MH ML MN MP MZ NL OD OR PB PY RJ SK TN TR TS UK UP UA WB'.split(' ');
+const okReg=r=>/^\d{2}BH\d{4}[A-Z]{2}$/.test(r)||(m=>!!m&&STATES.includes(m[1])&&m[2]!=='00'&&m[4]!=='0000')(r.match(/^([A-Z]{2})(\d{2})([A-Z]{1,3})(\d{4})$/));
+const okVin=v=>/^[A-HJ-NPR-Z0-9]{17}$/.test(v);
+P.new=gate(async id=>{let v={},pics=[];if(id)v=(await api('/vehicles/'+id)).vehicle;const sel=(k,arr)=>`<div><label>${k[1]}</label><select id="${k[0]}">${arr.map(c=>`<option ${v[k[0]]===c?'selected':''}>${c}</option>`).join('')}</select></div>`;
+ app.innerHTML=`<a href="#/profile/selling">← Selling history</a><form class="card" id="f" novalidate style="max-width:780px;margin:14px auto"><h2>${id?'Edit':'List a'} vehicle</h2><div class="f2">${F('title','Title',v.title)}${F('make','Make',v.make)}${F('model','Model',v.model)}${F('year','Year',v.year,'number')}
+ ${sel(['category','Category'],['Sedan','SUV','Hatchback','Truck','Luxury','Sports','Bike','Other'])}
+ <div><label>Sale type</label><select id="sale_type"><option value="auction" ${v.sale_type==='auction'?'selected':''}>Auction</option><option value="buy_it_now" ${v.sale_type==='buy_it_now'?'selected':''}>Buy It Now</option></select></div>
+ ${sel(['fuel_type','Fuel'],['Petrol','Diesel','CNG','Electric','Hybrid'])}${sel(['transmission','Transmission'],['Manual','Automatic'])}
+ <div><label>Registration number</label><input id="reg_no" value="${esc(v.reg_no)}" placeholder="MH12AB1234" maxlength="10" autocapitalize="characters"><div class="hint" id="rh">Format: State (2 letters) + RTO (2 digits) + Series (1–3 letters) + Number (4 digits). Example: MH12AB1234. Bharat series: 22BH1234AA.</div></div>
+ <div><label>VIN / Chassis number <span style="text-transform:none">(optional)</span></label><input id="vin" value="${esc(v.vin)}" placeholder="17 characters" maxlength="17" autocapitalize="characters"><div class="hint" id="vh">17 letters/digits — I, O and Q are never used.</div><div class="box">📍 Where to find it: dashboard corner near the windshield (driver side) · sticker on the driver-door pillar · engine bay plate · RC book (“Chassis No.”) or insurance papers.</div></div>
+ ${F('reserve_price','Reserve price (₹)',v.reserve_price,'number')}${F('buy_it_now_price','Buy It Now price (₹)',v.buy_it_now_price,'number')}${F('est_retail_value','Est. retail value (₹)',v.est_retail_value,'number')}${sel(['condition_type','Condition'],['used','new','salvage'])}</div>
+ ${id?'<p class="m">Photos can’t be changed while editing.</p>':`<label>Photos <span style="text-transform:none">(minimum 6, maximum 12 — first photo is the cover)</span></label><label class="drop" for="pf">📷 Click to add photos<br><span class="m">JPG, PNG or WEBP</span></label><input id="pf" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div class="hint" id="pc2"></div><div class="pg" id="pg"></div>`}
+ <button class="btn" type="submit" style="width:100%;margin-top:20px">${id?'Save changes':'Create listing'}</button></form>`;
+ const rg=$('#reg_no'),vn=$('#vin');
+ rg.oninput=()=>{rg.value=rg.value.toUpperCase().replace(/[^A-Z0-9]/g,'');const h=$('#rh');if(!rg.value){h.className='hint';return}h.className='hint '+(okReg(rg.value)?'ok':'bad');h.textContent=okReg(rg.value)?'✓ Valid registration number':'Not a valid format yet — example: MH12AB1234'};
+ vn.oninput=()=>{vn.value=vn.value.toUpperCase().replace(/[^A-Z0-9]/g,'');const h=$('#vh');if(!vn.value){h.className='hint';h.textContent='17 letters/digits — I, O and Q are never used.';return}h.className='hint '+(okVin(vn.value)?'ok':'bad');h.textContent=okVin(vn.value)?'✓ Valid VIN':`${vn.value.length}/17 characters${/[IOQ]/.test(vn.value)?' — I, O, Q are not allowed':''}`};
+ if(rg.value)rg.oninput();if(vn.value)vn.oninput();
+ const draw=()=>{if(id)return;$('#pg').innerHTML=pics.map((p,i)=>`<div class="pt" style="background-image:url('${p}')"><button type="button" data-x="${i}" aria-label="Remove">✕</button>${i===0?'<b>Cover</b>':''}</div>`).join('');
+  const h=$('#pc2');h.className='hint '+(pics.length>=6?'ok':'bad');h.textContent=`${pics.length}/12 photos added`+(pics.length<6?` — add ${6-pics.length} more (minimum 6)`:' ✓');
+  document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{pics.splice(+b.dataset.x,1);draw()})};
+ if(!id){draw();$('#pf').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(pics.length+fs.length>12)toast('Maximum 12 photos — extra files ignored','e');
+  for(const f of fs.slice(0,12-pics.length)){try{pics.push(await shrink(f))}catch{toast(f.name+' is not a valid image','e')}}draw()}}
+ $('#f').onsubmit=ev=>{ev.preventDefault();const b={};['title','make','model','year','category','sale_type','fuel_type','transmission','reg_no','vin','reserve_price','buy_it_now_price','est_retail_value','condition_type'].forEach(k=>b[k]=$('#'+k).value.trim());
+  if(!b.title||!b.make||!b.model||!b.year)return toast('Title, make, model and year are required','e');
+  if(!okReg(b.reg_no))return toast('Enter a valid registration number, e.g. MH12AB1234','e');
+  if(b.vin&&!okVin(b.vin))return toast('VIN must be exactly 17 characters (no I, O, Q)','e');
+  if(!id&&pics.length<6)return toast('Please add at least 6 photos — listings without photos are not allowed','e');
+  act(async()=>{const r=await api('/vehicles'+(id?'/'+id:''),{method:id?'PUT':'POST',body:b});
+   if(!id){try{await api('/vehicles/'+r.vehicle.id+'/images',{method:'POST',body:{images:pics}})}catch(e){await api('/vehicles/'+r.vehicle.id,{method:'DELETE'}).catch(()=>{});throw e}}
+   location.hash='#/profile/selling'},id?'Saved':'Listing created with photos')}});
+P.sa=gate(async id=>{const r=await api('/auctions/my-auctions/'+id),a=r.auction,sl=(await api('/vehicles/'+a.vehicle_id+'/sale').catch(()=>({}))).sale,ended=a.status==='ended',won=ended&&Number(a.bid_count)>0&&Number(a.reserve_met);
+ const box=[[ended?'Final bid':Number(a.current_bid)>0?'Current bid':'Starting bid',inr(Number(a.current_bid)||a.starting_bid)],['Bids',a.bid_count],['Reserve',Number(a.reserve_met)?'Met':'Not met'],['Payment status',sl?'Completed':won?'Pending':ended?'No winner':'—'],[ended?'Ended':'Ends',dt(a.current_end_time||a.end_time)]];
+ if(sl)box.push(['Sold price',inr(sl.price)],['Winner / buyer',esc(sl.buyer_name)],['Sold via',esc(sl.method)]);else box.push(['Winner',r.winner?esc(r.winner.bidder_name):'—']);
+ app.innerHTML=`<a href="#/profile/selling">← Selling history</a><div class="two" style="margin-top:12px"><div class="card"><h2>${esc(a.vehicle_title)}</h2>${sl?'<span class="tag sold">Sold</span> ':''}<span class="tag ${a.status}">${sty(a.status)}</span><div class="spec">${box.map(x=>`<div><small>${x[0]}</small>${x[1]}</div>`).join('')}</div>${sl?'<p class="m">The payment was credited to your wallet — <a href="#/profile/wallet">view transactions</a>.</p>':''}</div>
+ <div class="card"><h3>Bids</h3>${r.bids.length?`<table>${r.bids.map(b=>`<tr><td>${esc(b.bidder_name)}</td><td><b>${inr(b.bid_amount)}</b></td><td class="m">${dt(b.bid_time)}</td></tr>`).join('')}</table>`:'<div class="empty">No bids yet</div>'}</div></div>`});
+P.faq=async()=>{const{faqs}=await api('/auth/faqs');app.innerHTML=`<h2>Frequently asked questions</h2>`+faqs.map(f=>`<details><summary>${esc(f.question)}</summary><p class="m">${esc(f.answer)}</p></details>`).join('')};
+async function route(){clear();nav();const[,r,a]=(location.hash||'#/').split('?')[0].split('/');window.scrollTo(0,0);app.classList.remove('fadein');void app.offsetWidth;app.classList.add('fadein');
+ const m={'':P.home,schedule:P.schedule,auctions:P.auctions,v:P.v,login:P.login,register:P.register,forgot:P.forgot,wallet:()=>P.profile('wallet'),bids:()=>P.profile('bidding'),sell:()=>P.profile('selling'),watchlist:P.watchlist,new:P.new,sa:P.sa,profile:P.profile,faq:P.faq}[r||''];
+ try{await(m||P.home)(a)}catch(e){app.innerHTML=`<div class="empty">⚠ ${esc(e.message||'Error')}<br><br><a class="btn" href="#/">Home</a></div>`}}
+addEventListener('hashchange',route);route();
+</script></body></html>
